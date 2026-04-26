@@ -6,6 +6,8 @@ const compression = require("compression");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 
+
+
 const { connectDatabase } = require("./config/database");
 const redisClient = require("./config/redis"); // ✅ Fixed: Direct import
 const { errorResponse, successResponse } = require("./utils/apiResponse.utils");
@@ -36,12 +38,10 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use(compression());
 app.use(morgan("dev"));
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  })
-);
+app.use(cors({
+    origin:'http://localhost:3000',
+    credentials:true
+}));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(limiter);

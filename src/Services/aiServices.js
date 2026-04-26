@@ -1,4 +1,4 @@
-const { getGeminiModel } = require("../config/aiConfig");
+const { getGroqClient } = require("../config/aiConfig");
 const {
   PROBLEM_EXPLANATION_PROMPT,
   INTERVIEW_QUESTION_GENERATOR,
@@ -6,14 +6,21 @@ const {
   CODE_HELPER_PROMPT,
 } = require("../constants/aiPrompts");
 
-const askGemini = async (prompt) => {
-  const model = getGeminiModel();
-  const result = await model.generateContent(prompt);
-  return result.response.text();
+const askAI = async (prompt) => {
+  const groq = getGroqClient();
+  const response = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [{ role: "user", content: prompt }],
+    max_tokens: 1024,
+  });
+  return response.choices[0].message.content;
 };
 
 const generateResponse = async (userMessage, context = {}, history = []) => {
-  const recentHistory = history.slice(-6).map((m) => `${m.role}: ${m.content}`).join("\n");
+  const recentHistory = history
+    .slice(-6)
+    .map((m) => `${m.role}: ${m.content}`)
+    .join("\n");
 
   const prompt = `${CODE_HELPER_PROMPT}
 
@@ -27,7 +34,7 @@ ${recentHistory || "No previous conversation"}
 User question:
 ${userMessage}`;
 
-  return askGemini(prompt);
+  return askAI(prompt);
 };
 
 const explainProblem = async (problemLink) => {
@@ -37,7 +44,7 @@ Problem Link: ${problemLink}
 
 If the exact problem content is not accessible from the link alone, give a general interview-ready framework to approach such problems.`;
 
-  return askGemini(prompt);
+  return askAI(prompt);
 };
 
 const generateQuestions = async (topic, difficulty = "Medium", count = 5) => {
@@ -53,7 +60,7 @@ Return strict JSON array with this shape only:
   }
 ]`;
 
-  const raw = await askGemini(prompt);
+  const raw = await askAI(prompt);
   try {
     const clean = raw.replace(/```json|```/g, "").trim();
     return JSON.parse(clean);
@@ -75,12 +82,12 @@ Give:
 4) Resume + project suggestions
 5) Common mistakes to avoid`;
 
-  return askGemini(prompt);
+  return askAI(prompt);
 };
 
 const summarizeContent = async (content) => {
   const prompt = `Summarize this content for a college student in bullet points with action items:\n\n${content}`;
-  return askGemini(prompt);
+  return askAI(prompt);
 };
 
 module.exports = {

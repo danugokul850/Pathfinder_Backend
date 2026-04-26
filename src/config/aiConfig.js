@@ -1,20 +1,15 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq = require("groq-sdk");
 
-const GEMINI_MODEL = "gemini-1.5-flash";
+let groqInstance = null;
 
-let modelInstance = null;
-
-const getGeminiModel = () => {
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is missing in environment variables");
+const getGroqClient = () => {
+  if (!process.env.GROQ_API_KEY) {
+    throw new Error("GROQ_API_KEY is missing");
   }
-
-  if (!modelInstance) {
-    const client = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    modelInstance = client.getGenerativeModel({ model: GEMINI_MODEL });
+  if (!groqInstance) {
+    groqInstance = new Groq({ apiKey: process.env.GROQ_API_KEY });
   }
-
-  return modelInstance;
+  return groqInstance;
 };
 
-module.exports = { getGeminiModel, GEMINI_MODEL };
+module.exports = { getGroqClient };

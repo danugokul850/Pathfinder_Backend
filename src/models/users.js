@@ -89,6 +89,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    socials: {
+  linkedin: { type: String, default: '' },
+  github: { type: String, default: '' },
+  portfolio: { type: String, default: '' },
+},
     verificationToken: {
       type: String,
       default: null,

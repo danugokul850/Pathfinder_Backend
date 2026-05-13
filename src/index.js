@@ -39,9 +39,13 @@ app.use(helmet());
 app.use(compression());
 app.use(morgan("dev"));
 app.use(cors({
-    origin:'http://localhost:3000',
-    credentials:true
-}));
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173', 
+    'https://genzpathfinder.netlify.app',   // ← add quotes, remove trailing slash
+  ],
+  credentials: true
+}))
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(limiter);

@@ -42,7 +42,8 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:5173', 
-    'https://genzpathfinder.netlify.app',   // ← add quotes, remove trailing slash
+    'https://genzpathfinder.netlify.app',
+    'https://pathfinder-frontend-o7eb.onrender.com'    // ← add quotes, remove trailing slash
   ],
   credentials: true
 }))

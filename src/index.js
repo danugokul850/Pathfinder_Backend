@@ -21,6 +21,7 @@ const questionRoutes = require("./routes/questionsRouter");
 const aiRoutes = require("./routes/aiRouter");
 
 const app = express();
+app.set('trust proxy', 1); 
 
 // Rate limiter
 const limiter = rateLimit({
